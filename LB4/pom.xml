@@ -5,9 +5,18 @@
     <artifactId>LB4</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
+    <dependencies>
+        <!-- PostgreSQL JDBC Driver -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.3</version>
+        </dependency>
+    </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>22</maven.compiler.source>
         <maven.compiler.target>22</maven.compiler.target>
+        <exec.mainClass>com.mycompany.lb4.LB4</exec.mainClass>
     </properties>
 </project>

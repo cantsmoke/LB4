@@ -5,6 +5,7 @@
 package com.mycompany.lb4;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.*;
 
 public class ShopService {
@@ -32,8 +33,17 @@ public class ShopService {
             throw new IllegalArgumentException("Палочка с таким ID не найдена.");
         }
 
-        Buyer buyer = new Buyer(0, buyerName, stick);
-        buyer.save();
+        Buyer buyer = Buyer.getByName(buyerName);
+
+        if (buyer == null) {
+            // Создаем нового покупателя, если такого ещё нет
+            buyer = new Buyer(0, buyerName);
+            buyer.save();
+        }
+
+        // Создаем запись о продаже
+        Sale sale = new Sale(0, buyer, stick, LocalDate.now());
+        sale.save();
     }
 
     // Заказать новые компоненты

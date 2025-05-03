@@ -11,16 +11,12 @@ import java.util.List;
 public class Buyer {
     private int id;
     private String name;
-    private MagicStick stick;
 
-    // Конструктор
-    public Buyer(int id, String name, MagicStick stick) {
+    public Buyer(int id, String name) {
         this.id = id;
         this.name = name;
-        this.stick = stick;
     }
 
-    // Геттеры
     public int getId() {
         return id;
     }
@@ -29,28 +25,17 @@ public class Buyer {
         return name;
     }
 
-    public MagicStick getStick() {
-        return stick;
-    }
-
-    // Сеттеры
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setStick(MagicStick stick) {
-        this.stick = stick;
-    }
-
-    // Сохранить или обновить в БД
     public void save() throws SQLException {
         Connection connection = DatabaseManager.getInstance().getConnection();
         if (this.id == 0) {
             // Вставка новой записи
-            String sql = "INSERT INTO Buyer (name, stick_id) VALUES (?, ?)";
+            String sql = "INSERT INTO Buyer (name) VALUES (?)";
             try (PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 pstmt.setString(1, name);
-                pstmt.setInt(2, stick.getId());
                 pstmt.executeUpdate();
 
                 ResultSet rs = pstmt.getGeneratedKeys();
@@ -60,17 +45,15 @@ public class Buyer {
             }
         } else {
             // Обновление существующей записи
-            String sql = "UPDATE Buyer SET name = ?, stick_id = ? WHERE id = ?";
+            String sql = "UPDATE Buyer SET name = ? WHERE id = ?";
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
                 pstmt.setString(1, name);
-                pstmt.setInt(2, stick.getId());
-                pstmt.setInt(3, id);
+                pstmt.setInt(2, id);
                 pstmt.executeUpdate();
             }
         }
     }
 
-    // Получить покупателя по ID
     public static Buyer getById(int id) throws SQLException {
         Connection connection = DatabaseManager.getInstance().getConnection();
         String sql = "SELECT * FROM Buyer WHERE id = ?";
@@ -78,18 +61,15 @@ public class Buyer {
             pstmt.setInt(1, id);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                MagicStick stick = MagicStick.getById(rs.getInt("stick_id"));
                 return new Buyer(
                         rs.getInt("id"),
-                        rs.getString("name"),
-                        stick
+                        rs.getString("name")
                 );
             }
         }
         return null;
     }
 
-    // Получить всех покупателей
     public static List<Buyer> getAll() throws SQLException {
         Connection connection = DatabaseManager.getInstance().getConnection();
         List<Buyer> buyers = new ArrayList<>();
@@ -97,42 +77,36 @@ public class Buyer {
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                MagicStick stick = MagicStick.getById(rs.getInt("stick_id"));
                 buyers.add(new Buyer(
                         rs.getInt("id"),
-                        rs.getString("name"),
-                        stick
+                        rs.getString("name")
                 ));
             }
         }
         return buyers;
     }
 
-    // Привязка палочки к покупателю
-    public void buyStick(MagicStick stick) throws SQLException {
-        this.stick = stick;
-        this.save();
-    }
-    
-    public static boolean isStickSold(int stickId) throws SQLException {
+    public static Buyer getByName(String name) throws SQLException {
         Connection connection = DatabaseManager.getInstance().getConnection();
-        String sql = "SELECT COUNT(*) FROM Buyer WHERE stick_id = ?";
+        String sql = "SELECT * FROM Buyer WHERE name = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setInt(1, stickId);
+            pstmt.setString(1, name);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                return rs.getInt(1) > 0;
+                return new Buyer(
+                        rs.getInt("id"),
+                        rs.getString("name")
+                );
             }
         }
-        return false;
+        return null;
     }
-
+    
     @Override
     public String toString() {
         return "Buyer{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", stickId=" + (stick != null ? stick.getId() : "null") +
                 '}';
     }
 }

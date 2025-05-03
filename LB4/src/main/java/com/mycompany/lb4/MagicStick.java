@@ -137,7 +137,7 @@ public class MagicStick {
     public static List<MagicStick> getUnsoldSticks() throws SQLException {
         List<MagicStick> unsoldSticks = new ArrayList<>();
         for (MagicStick stick : getAll()) {
-            if (!Buyer.isStickSold(stick.getId())) {
+            if (!Sale.isStickSold(stick.getId())) {
                 unsoldSticks.add(stick);
             }
         }

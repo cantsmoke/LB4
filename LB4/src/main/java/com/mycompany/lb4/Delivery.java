@@ -5,12 +5,14 @@
 package com.mycompany.lb4;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Delivery {
     private int id;
     private List<DeliveryDetails> details;
+    private LocalDate deliveryDate;
 
     // Конструктор
     public Delivery(int id) throws SQLException {
@@ -27,7 +29,15 @@ public class Delivery {
     public List<DeliveryDetails> getDetails() {
         return details;
     }
+    
+    public LocalDate getDeliveryDate() {
+        return deliveryDate;
+    }
 
+    public void setDeliveryDate(LocalDate deliveryDate) {
+        this.deliveryDate = deliveryDate;
+    }
+    
     // Загрузка деталей поставки из БД
     private void loadDetails() throws SQLException {
         this.details = DeliveryDetails.getByDeliveryId(this.id);
@@ -37,10 +47,11 @@ public class Delivery {
     public void save() throws SQLException {
         Connection connection = DatabaseManager.getInstance().getConnection();
         if (this.id == 0) {
-            String sql = "INSERT INTO Delivery (details_id) VALUES (?)";
+            String sql = "INSERT INTO Delivery (details_id, delivery_date) VALUES (?, ?)";
             try (PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 // Вставка пустой записи для генерации ID
                 pstmt.setNull(1, Types.INTEGER);
+                pstmt.setDate(2, Date.valueOf(deliveryDate));
                 pstmt.executeUpdate();
 
                 ResultSet rs = pstmt.getGeneratedKeys();

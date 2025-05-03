@@ -26,9 +26,12 @@ class StickCatalogDialog extends JDialog {
                         stick.getWood().getType(),
                         stick.getCore().getType());
 
-                if (Buyer.isStickSold(stick.getId())) {
-                    Buyer buyer = Buyer.getById(stick.getId());
-                    info += " | Куплена: " + (buyer != null ? buyer.getName() : "Неизвестный");
+                if (Sale.isStickSold(stick.getId())) {
+                    List<Sale> sales = Sale.getByStick(stick);
+                    if (!sales.isEmpty()) {
+                        Sale sale = sales.get(0); // первая продажа
+                        info += " | Куплена: " + sale.getBuyer().getName() + " (" + sale.getSaleDate() + ")";
+                    }
                 }
 
                 listModel.addElement(info);

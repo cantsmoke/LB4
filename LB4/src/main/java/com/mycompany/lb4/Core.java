@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.lb4;
 
 import java.sql.*;
@@ -13,14 +9,12 @@ public class Core {
     private String type;
     private int amount;
 
-    // Конструктор
     public Core(int id, String type, int amount) {
         this.id = id;
         this.type = type;
         this.amount = amount;
     }
 
-    // Геттеры
     public int getId() {
         return id;
     }
@@ -33,7 +27,6 @@ public class Core {
         return amount;
     }
 
-    // Сеттеры
     public void setType(String type) {
         this.type = type;
     }
@@ -42,11 +35,9 @@ public class Core {
         this.amount = amount;
     }
 
-    // Сохранить в БД (вставка или обновление)
     public void save() throws SQLException {
         Connection connection = DatabaseManager.getInstance().getConnection();
         if (this.id == 0) {
-            // Вставка новой записи
             String sql = "INSERT INTO Core (type, amount) VALUES (?, ?)";
             try (PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 pstmt.setString(1, type);
@@ -59,7 +50,6 @@ public class Core {
                 }
             }
         } else {
-            // Обновление существующей записи
             String sql = "UPDATE Core SET type = ?, amount = ? WHERE id = ?";
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
                 pstmt.setString(1, type);
@@ -70,7 +60,6 @@ public class Core {
         }
     }
 
-    // Получить запись по ID
     public static Core getById(int id) throws SQLException {
         Connection connection = DatabaseManager.getInstance().getConnection();
         String sql = "SELECT * FROM Core WHERE id = ?";
@@ -88,7 +77,6 @@ public class Core {
         return null;
     }
 
-    // Получить все записи
     public static List<Core> getAll() throws SQLException {
         Connection connection = DatabaseManager.getInstance().getConnection();
         List<Core> cores = new ArrayList<>();
@@ -106,9 +94,8 @@ public class Core {
         return cores;
     }
 
-    // Обновить количество сердцевины
-    public void updateAmount(int newAmount) throws SQLException {
-        this.amount = newAmount;
+    public void updateAmount(int addedAmount) throws SQLException {
+        this.amount += addedAmount;
         this.save();
     }
 

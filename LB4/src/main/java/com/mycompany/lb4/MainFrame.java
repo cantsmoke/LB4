@@ -1,38 +1,39 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.lb4;
 
 import javax.swing.*;
 import java.awt.event.*;
 import java.sql.SQLException;
 
+import java.awt.*;
+
 public class MainFrame extends JFrame implements ActionListener {
     private JButton btnAddStick;
     private JButton btnSellStick;
+    private JButton btnViewSticks;
     private JButton btnRestock;
     private JButton btnCheckStock;
     private JButton btnStartFresh;
-    private JButton btnViewSticks;
     private JButton btnExit;
-    
+
     public MainFrame() {
         setTitle("Магазин волшебных палочек «Олливандера»");
-        setSize(600, 400);
+        setSize(700, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // Отступы между кнопками
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // Создаем кнопки
-        btnAddStick = new JButton("Добавить палочку");
-        btnSellStick = new JButton("Продать палочку");
-        btnViewSticks = new JButton("Просмотреть палочки");
-        btnRestock = new JButton("Пополнить склад");
-        btnCheckStock = new JButton("Проверить остатки");
-        btnStartFresh = new JButton("Начать с чистого листа");
-        btnExit = new JButton("Выход");
+        Font buttonFont = new Font("Arial", Font.BOLD, 16);
 
-        // Подписываемся на события
+        btnAddStick = createStyledButton("Добавить палочку");
+        btnSellStick = createStyledButton("Продать палочку");
+        btnViewSticks = createStyledButton("Просмотреть палочки");
+        btnRestock = createStyledButton("Пополнить склад");
+        btnCheckStock = createStyledButton("Проверить остатки");
+        btnStartFresh = createStyledButton("Начать с чистого листа");
+        btnExit = createStyledButton("Выход");
+
         btnAddStick.addActionListener(this);
         btnSellStick.addActionListener(this);
         btnViewSticks.addActionListener(this);
@@ -41,16 +42,35 @@ public class MainFrame extends JFrame implements ActionListener {
         btnStartFresh.addActionListener(this);
         btnExit.addActionListener(this);
 
-        // Добавляем кнопки на форму
-        add(btnAddStick);
-        add(btnSellStick);
-        add(btnViewSticks);
-        add(btnRestock);
-        add(btnCheckStock);
-        add(btnStartFresh);
-        add(btnExit);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        add(btnAddStick, gbc);
+        gbc.gridy++;
+        add(btnSellStick, gbc);
+        gbc.gridy++;
+        add(btnViewSticks, gbc);
+        gbc.gridy++;
+        add(btnRestock, gbc);
+        gbc.gridy++;
+        add(btnCheckStock, gbc);
+        gbc.gridy++;
+        add(btnStartFresh, gbc);
+        gbc.gridy++;
+        add(btnExit, gbc);
 
+        getContentPane().setBackground(new Color(240, 240, 255));
+        setLocationRelativeTo(null);
         setVisible(true);
+    }
+
+    private JButton createStyledButton(String text) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Arial", Font.BOLD, 16));
+        button.setBackground(new Color(100, 149, 237));
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        return button;
     }
 
     @Override
@@ -63,13 +83,6 @@ public class MainFrame extends JFrame implements ActionListener {
             new StickCatalogDialog(this);
         } else if (e.getSource() == btnRestock) {
             new RestockDialog(this);
-        } else if (e.getSource() == btnExit) {
-            try {
-                DatabaseManager.getInstance().disconnect();
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, "Ошибка при отключении от БД: " + ex.getMessage(), "Ошибка", JOptionPane.ERROR_MESSAGE);
-            }
-            System.exit(0);
         } else if (e.getSource() == btnCheckStock) {
             new StockInfoDialog(this);
         } else if (e.getSource() == btnStartFresh) {
@@ -85,6 +98,13 @@ public class MainFrame extends JFrame implements ActionListener {
                     JOptionPane.showMessageDialog(this, "Ошибка: " + ex.getMessage(), "Ошибка", JOptionPane.ERROR_MESSAGE);
                 }
             }
+        } else if (e.getSource() == btnExit) {
+            try {
+                DatabaseManager.getInstance().disconnect();
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, "Ошибка при отключении от БД: " + ex.getMessage(), "Ошибка", JOptionPane.ERROR_MESSAGE);
+            }
+            System.exit(0);
         }
     }
 }

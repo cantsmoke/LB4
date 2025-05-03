@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.lb4;
 
 import java.sql.*;
@@ -32,7 +28,6 @@ public class Buyer {
     public void save() throws SQLException {
         Connection connection = DatabaseManager.getInstance().getConnection();
         if (this.id == 0) {
-            // Вставка новой записи
             String sql = "INSERT INTO Buyer (name) VALUES (?)";
             try (PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 pstmt.setString(1, name);
@@ -44,7 +39,6 @@ public class Buyer {
                 }
             }
         } else {
-            // Обновление существующей записи
             String sql = "UPDATE Buyer SET name = ? WHERE id = ?";
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
                 pstmt.setString(1, name);

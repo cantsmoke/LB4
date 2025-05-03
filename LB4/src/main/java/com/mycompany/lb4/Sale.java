@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.lb4;
 
 import java.sql.*;
@@ -43,7 +39,6 @@ public class Sale {
         if (this.id == 0) {
             String sql = "INSERT INTO Sale (buyer_id, stick_id, sale_date) VALUES (?, ?, ?)";
             try (PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                // Проверка на null
                 if (buyer == null || stick == null || saleDate == null) {
                     throw new IllegalArgumentException("Необходимо указать покупателя, палочку и дату продажи.");
                 }
@@ -61,7 +56,6 @@ public class Sale {
         } else {
             String sql = "UPDATE Sale SET buyer_id = ?, stick_id = ?, sale_date = ? WHERE id = ?";
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-                // Проверка на null
                 if (buyer == null || stick == null || saleDate == null) {
                     throw new IllegalArgumentException("Необходимо указать покупателя, палочку и дату продажи.");
                 }
@@ -69,7 +63,7 @@ public class Sale {
                 pstmt.setInt(1, buyer.getId());
                 pstmt.setInt(2, stick.getId());
                 pstmt.setDate(3, Date.valueOf(saleDate));
-                pstmt.setInt(4, id); // Установка ID для UPDATE
+                pstmt.setInt(4, id);
                 pstmt.executeUpdate();
             }
         }

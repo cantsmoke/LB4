@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.lb4;
 
 import java.sql.*;
@@ -10,7 +6,6 @@ import java.util.*;
 
 public class ShopService {
 
-    // Добавить новую палочку
     public static void addNewMagicStick(Wood wood, Core core, double price) throws SQLException {
         if (wood.getAmount() <= 0 || core.getAmount() <= 0) {
             throw new IllegalStateException("Недостаточно материала для создания палочки.");
@@ -26,7 +21,6 @@ public class ShopService {
         core.save();
     }
 
-    // Продать палочку
     public static void sellMagicStick(int stickId, String buyerName) throws SQLException {
         MagicStick stick = MagicStick.getById(stickId);
         if (stick == null) {
@@ -36,36 +30,56 @@ public class ShopService {
         Buyer buyer = Buyer.getByName(buyerName);
 
         if (buyer == null) {
-            // Создаем нового покупателя, если такого ещё нет
             buyer = new Buyer(0, buyerName);
             buyer.save();
         }
 
-        // Создаем запись о продаже
         Sale sale = new Sale(0, buyer, stick, LocalDate.now());
         sale.save();
     }
 
-    // Заказать новые компоненты
     public static void restockComponents(List<ComponentRestockRequest> requests) throws SQLException {
-        for (ComponentRestockRequest request : requests) {
-            String componentType = request.getComponentType();
-            int componentId = request.getComponentId();
-            int amountToRestock = request.getAmountToRestock();
+        if (requests == null || requests.isEmpty()) {
+            throw new IllegalArgumentException("Список запросов не может быть пустым.");
+        }
 
-            if ("WOOD".equals(componentType)) {
-                Wood wood = Wood.getById(componentId);
-                wood.setAmount(wood.getAmount() + amountToRestock);
-                wood.save();
-            } else if ("CORE".equals(componentType)) {
-                Core core = Core.getById(componentId);
-                core.setAmount(core.getAmount() + amountToRestock);
-                core.save();
+        Connection connection = DatabaseManager.getInstance().getConnection();
+
+        try {
+            connection.setAutoCommit(false);
+
+            Delivery delivery = new Delivery(0, LocalDate.now());
+            delivery.save();
+
+            for (ComponentRestockRequest request : requests) {
+                String componentType = request.getComponentType();
+                int componentId = request.getComponentId();
+                int amount = request.getAmountToRestock();
+
+                DeliveryDetails details = new DeliveryDetails(0, delivery.getId(), componentType, componentId, amount);
+                details.save();
+
+                if ("WOOD".equals(componentType)) {
+                    Wood wood = Wood.getById(componentId);
+                    wood.setAmount(wood.getAmount() + amount);
+                    wood.save();
+                } else if ("CORE".equals(componentType)) {
+                    Core core = Core.getById(componentId);
+                    core.setAmount(core.getAmount() + amount);
+                    core.save();
+                }
             }
+
+            connection.commit();
+
+        } catch (SQLException e) {
+            connection.rollback();
+            throw e;
+        } finally {
+            connection.setAutoCommit(true);
         }
     }
 
-    // Проверить наличие на складе
     public static List<ComponentStockInfo> checkStock() throws SQLException {
         List<ComponentStockInfo> stockList = new ArrayList<>();
 
@@ -90,7 +104,6 @@ public class ShopService {
         return stockList;
     }
 
-    // Начать с чистого листа
     public static void startFresh() throws Exception {
         DatabaseManager dbManager = DatabaseManager.getInstance();
         dbManager.backupData();

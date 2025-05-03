@@ -1,8 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.lb4;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,14 +9,12 @@ public class Wood {
     private String type;
     private int amount;
 
-    // Конструктор
     public Wood(int id, String type, int amount) {
         this.id = id;
         this.type = type;
         this.amount = amount;
     }
 
-    // Геттеры
     public int getId() {
         return id;
     }
@@ -32,7 +27,6 @@ public class Wood {
         return amount;
     }
 
-    // Сеттеры
     public void setType(String type) {
         this.type = type;
     }
@@ -41,11 +35,9 @@ public class Wood {
         this.amount = amount;
     }
 
-    // Сохранить в БД (вставка или обновление)
     public void save() throws SQLException {
         Connection connection = DatabaseManager.getInstance().getConnection();
         if (this.id == 0) {
-            // Вставка новой записи
             String sql = "INSERT INTO Wood (type, amount) VALUES (?, ?)";
             try (PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 pstmt.setString(1, type);
@@ -58,7 +50,6 @@ public class Wood {
                 }
             }
         } else {
-            // Обновление существующей записи
             String sql = "UPDATE Wood SET type = ?, amount = ? WHERE id = ?";
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
                 pstmt.setString(1, type);
@@ -69,7 +60,6 @@ public class Wood {
         }
     }
 
-    // Получить запись по ID
     public static Wood getById(int id) throws SQLException {
         Connection connection = DatabaseManager.getInstance().getConnection();
         String sql = "SELECT * FROM Wood WHERE id = ?";
@@ -87,7 +77,6 @@ public class Wood {
         return null;
     }
 
-    // Получить все записи
     public static List<Wood> getAll() throws SQLException {
         Connection connection = DatabaseManager.getInstance().getConnection();
         List<Wood> woods = new ArrayList<>();
@@ -105,9 +94,8 @@ public class Wood {
         return woods;
     }
 
-    // Обновить количество древесины
-    public void updateAmount(int newAmount) throws SQLException {
-        this.amount = newAmount;
+    public void updateAmount(int addedAmount) throws SQLException {
+        this.amount += addedAmount;
         this.save();
     }
 

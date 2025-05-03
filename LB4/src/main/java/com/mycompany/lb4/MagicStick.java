@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.lb4;
 
 import java.sql.*;
@@ -14,7 +10,6 @@ public class MagicStick {
     private Core core;
     private double price;
 
-    // Конструктор
     public MagicStick(int id, Wood wood, Core core, double price) {
         this.id = id;
         this.wood = wood;
@@ -22,7 +17,6 @@ public class MagicStick {
         this.price = price;
     }
 
-    // Геттеры
     public int getId() {
         return id;
     }
@@ -39,7 +33,6 @@ public class MagicStick {
         return price;
     }
 
-    // Сеттеры
     public void setWood(Wood wood) {
         this.wood = wood;
     }
@@ -52,11 +45,9 @@ public class MagicStick {
         this.price = price;
     }
 
-    // Сохранить или обновить в БД
     public void save() throws SQLException {
         Connection connection = DatabaseManager.getInstance().getConnection();
         if (this.id == 0) {
-            // Вставка новой записи
             String sql = "INSERT INTO MagicStick (core_id, wood_id, price) VALUES (?, ?, ?)";
             try (PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 pstmt.setInt(1, core.getId());
@@ -70,7 +61,6 @@ public class MagicStick {
                 }
             }
         } else {
-            // Обновление существующей записи
             String sql = "UPDATE MagicStick SET core_id = ?, wood_id = ?, price = ? WHERE id = ?";
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
                 pstmt.setInt(1, core.getId());
@@ -82,7 +72,6 @@ public class MagicStick {
         }
     }
 
-    // Получить палочку по ID
     public static MagicStick getById(int id) throws SQLException {
         Connection connection = DatabaseManager.getInstance().getConnection();
         String sql = "SELECT * FROM MagicStick WHERE id = ?";
@@ -103,7 +92,6 @@ public class MagicStick {
         return null;
     }
 
-    // Получить все палочки
     public static List<MagicStick> getAll() throws SQLException {
         Connection connection = DatabaseManager.getInstance().getConnection();
         List<MagicStick> sticks = new ArrayList<>();
@@ -124,7 +112,6 @@ public class MagicStick {
         return sticks;
     }
 
-    // Удалить палочку
     public void delete() throws SQLException {
         Connection connection = DatabaseManager.getInstance().getConnection();
         String sql = "DELETE FROM MagicStick WHERE id = ?";

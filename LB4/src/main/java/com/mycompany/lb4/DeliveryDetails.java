@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.lb4;
 
 import java.sql.*;
@@ -10,21 +6,25 @@ import java.util.List;
 
 public class DeliveryDetails {
     private int id;
-    private String componentType; // "WOOD" или "CORE"
+    private int deliveryId;
+    private String componentType;
     private int componentId;
     private int amount;
 
-    // Конструктор
-    public DeliveryDetails(int id, String componentType, int componentId, int amount) {
+    public DeliveryDetails(int id, int deliveryId, String componentType, int componentId, int amount) {
         this.id = id;
+        this.deliveryId = deliveryId;
         this.componentType = componentType;
         this.componentId = componentId;
         this.amount = amount;
     }
 
-    // Геттеры
     public int getId() {
         return id;
+    }
+
+    public int getDeliveryId() {
+        return deliveryId;
     }
 
     public String getComponentType() {
@@ -39,7 +39,10 @@ public class DeliveryDetails {
         return amount;
     }
 
-    // Сеттеры
+    public void setDeliveryId(int deliveryId) {
+        this.deliveryId = deliveryId;
+    }
+
     public void setComponentType(String componentType) {
         this.componentType = componentType;
     }
@@ -52,16 +55,15 @@ public class DeliveryDetails {
         this.amount = amount;
     }
 
-    // Сохранить или обновить в БД
     public void save() throws SQLException {
         Connection connection = DatabaseManager.getInstance().getConnection();
         if (this.id == 0) {
-            // Вставка новой записи
-            String sql = "INSERT INTO DeliveryDetails (component_type, component_id, amount) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO DeliveryDetails (delivery_id, component_type, component_id, amount) VALUES (?, ?, ?, ?)";
             try (PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                pstmt.setString(1, componentType);
-                pstmt.setInt(2, componentId);
-                pstmt.setInt(3, amount);
+                pstmt.setInt(1, deliveryId);
+                pstmt.setString(2, componentType);
+                pstmt.setInt(3, componentId);
+                pstmt.setInt(4, amount);
                 pstmt.executeUpdate();
 
                 ResultSet rs = pstmt.getGeneratedKeys();
@@ -70,19 +72,18 @@ public class DeliveryDetails {
                 }
             }
         } else {
-            // Обновление существующей записи
-            String sql = "UPDATE DeliveryDetails SET component_type = ?, component_id = ?, amount = ? WHERE id = ?";
+            String sql = "UPDATE DeliveryDetails SET delivery_id = ?, component_type = ?, component_id = ?, amount = ? WHERE id = ?";
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-                pstmt.setString(1, componentType);
-                pstmt.setInt(2, componentId);
-                pstmt.setInt(3, amount);
-                pstmt.setInt(4, id);
+                pstmt.setInt(1, deliveryId);
+                pstmt.setString(2, componentType);
+                pstmt.setInt(3, componentId);
+                pstmt.setInt(4, amount);
+                pstmt.setInt(5, id);
                 pstmt.executeUpdate();
             }
         }
     }
 
-    // Получить запись по ID
     public static DeliveryDetails getById(int id) throws SQLException {
         Connection connection = DatabaseManager.getInstance().getConnection();
         String sql = "SELECT * FROM DeliveryDetails WHERE id = ?";
@@ -92,6 +93,7 @@ public class DeliveryDetails {
             if (rs.next()) {
                 return new DeliveryDetails(
                         rs.getInt("id"),
+                        rs.getInt("delivery_id"),
                         rs.getString("component_type"),
                         rs.getInt("component_id"),
                         rs.getInt("amount")
@@ -101,17 +103,17 @@ public class DeliveryDetails {
         return null;
     }
 
-    // Получить все детали поставки по delivery_id
     public static List<DeliveryDetails> getByDeliveryId(int deliveryId) throws SQLException {
         Connection connection = DatabaseManager.getInstance().getConnection();
         List<DeliveryDetails> detailsList = new ArrayList<>();
-        String sql = "SELECT * FROM DeliveryDetails WHERE id = ?";
+        String sql = "SELECT * FROM DeliveryDetails WHERE delivery_id = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, deliveryId);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 detailsList.add(new DeliveryDetails(
                         rs.getInt("id"),
+                        rs.getInt("delivery_id"),
                         rs.getString("component_type"),
                         rs.getInt("component_id"),
                         rs.getInt("amount")
@@ -123,11 +125,7 @@ public class DeliveryDetails {
 
     @Override
     public String toString() {
-        return "DeliveryDetails{" +
-                "id=" + id +
-                ", componentType='" + componentType + '\'' +
-                ", componentId=" + componentId +
-                ", amount=" + amount +
-                '}';
+        return String.format("DeliveryDetails{id=%d, deliveryId=%d, type='%s', componentId=%d, amount=%d}",
+                id, deliveryId, componentType, componentId, amount);
     }
 }

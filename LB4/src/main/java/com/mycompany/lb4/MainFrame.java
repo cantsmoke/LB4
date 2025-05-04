@@ -18,7 +18,23 @@ public class MainFrame extends JFrame implements ActionListener {
     public MainFrame() {
         setTitle("Магазин волшебных палочек «Олливандера»");
         setSize(700, 500);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    DatabaseManager.getInstance().disconnect();
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(MainFrame.this,
+                        "Ошибка при отключении от БД: " + ex.getMessage(),
+                        "Ошибка",
+                        JOptionPane.ERROR_MESSAGE);
+                }
+                System.exit(0);
+            }
+        });
+        
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10); // Отступы между кнопками

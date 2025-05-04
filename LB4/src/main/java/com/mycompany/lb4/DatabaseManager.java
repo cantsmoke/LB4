@@ -1,18 +1,10 @@
 package com.mycompany.lb4;
 
 import java.sql.*;
-import java.util.*;
 
 public class DatabaseManager {
     private static DatabaseManager instance;
     private Connection connection;
-    private boolean isBackupAvailable = false;
-    private List<Wood> woodBackup = new ArrayList<>();
-    private List<Core> coreBackup = new ArrayList<>();
-    private List<MagicStick> stickBackup = new ArrayList<>();
-    private List<Buyer> buyerBackup = new ArrayList<>();
-    private List<Delivery> deliveryBackup = new ArrayList<>();
-    private List<DeliveryDetails> deliveryDetailsBackup = new ArrayList<>();
 
     private DatabaseManager() {}
 
@@ -68,49 +60,4 @@ public class DatabaseManager {
         System.out.println("Все данные удалены. Остатки на складе обнулены.");
     }
 
-    public void backupData() throws Exception {
-        woodBackup = Wood.getAll();
-        coreBackup = Core.getAll();
-        stickBackup = MagicStick.getAll();
-        buyerBackup = Buyer.getAll();
-        deliveryBackup = Delivery.getAll();
-        for (Delivery d : deliveryBackup) {
-            deliveryDetailsBackup.addAll(d.getDetails());
-        }
-
-        isBackupAvailable = true;
-        System.out.println("Резервная копия создана.");
-    }
-
-    public void restoreData() throws Exception {
-        if (!isBackupAvailable) {
-            throw new IllegalStateException("Нет доступной резервной копии.");
-        }
-
-        clearAllData();
-
-        for (Wood w : woodBackup) {
-            w.setAmount(w.getAmount());
-            w.save();
-        }
-
-        for (Core c : coreBackup) {
-            c.setAmount(c.getAmount());
-            c.save();
-        }
-
-        for (MagicStick s : stickBackup) {
-            s.save();
-        }
-
-        for (Buyer b : buyerBackup) {
-            b.save();
-        }
-
-        for (DeliveryDetails d : deliveryDetailsBackup) {
-            d.save();
-        }
-
-        System.out.println("Данные восстановлены из резервной копии.");
-    }
 }

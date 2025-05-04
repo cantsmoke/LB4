@@ -106,7 +106,6 @@ public class ShopService {
 
     public static void startFresh() throws Exception {
         DatabaseManager dbManager = DatabaseManager.getInstance();
-        dbManager.backupData();
         dbManager.clearAllData();
     }
 }

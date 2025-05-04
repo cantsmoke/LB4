@@ -9,7 +9,7 @@ public class LB4 {
             } catch (Exception e) {
                 System.err.println("Ошибка подключения к БД: " + e.getMessage());
                 e.printStackTrace();
-            }
+            } 
         });
     }
 }

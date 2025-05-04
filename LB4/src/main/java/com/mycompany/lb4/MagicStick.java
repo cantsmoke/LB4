@@ -133,11 +133,10 @@ public class MagicStick {
 
     @Override
     public String toString() {
-        return "MagicStick{" +
-                "id=" + id +
-                ", wood=" + wood.getType() +
-                ", core=" + core.getType() +
-                ", price=" + price +
-                '}';
+        return "Волшебная палочка (" +
+                "древесина: " + wood.getType() +
+                ", сердцевина: " + core.getType() +
+                ", цена: " + price + 
+                ')';
     }
 }

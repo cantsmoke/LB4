@@ -12,7 +12,7 @@ public class SellStickDialog extends JDialog {
 
     public SellStickDialog(JFrame parent) {
         super(parent, "Продать палочку", true);
-        setSize(700, 300);
+        setSize(800, 300);
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);

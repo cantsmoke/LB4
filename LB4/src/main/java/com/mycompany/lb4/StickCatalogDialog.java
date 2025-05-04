@@ -9,7 +9,7 @@ import java.util.List;
 public class StickCatalogDialog extends JDialog {
     public StickCatalogDialog(JFrame parent) {
         super(parent, "Список всех палочек", true);
-        setSize(800, 400);
+        setSize(900, 400);
         setLayout(new BorderLayout(10, 10));
         getContentPane().setBackground(Color.WHITE);
         setLocationRelativeTo(parent);

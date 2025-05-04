@@ -99,12 +99,8 @@ public class Wood {
         this.save();
     }
 
-    @Override
+     @Override
     public String toString() {
-        return "Wood{" +
-                "id=" + id +
-                ", type='" + type + '\'' +
-                ", amount=" + amount +
-                '}';
+        return String.format("%s (Есть в наличии: %d)", type, amount);
     }
 }

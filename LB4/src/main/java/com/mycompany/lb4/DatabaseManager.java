@@ -36,28 +36,27 @@ public class DatabaseManager {
     }
 
     public void clearAllData() throws SQLException {
-        Statement stmt = connection.createStatement();
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute("SET CONSTRAINTS ALL DEFERRED");
 
-        stmt.execute("SET CONSTRAINTS ALL DEFERRED");
+            stmt.execute("DELETE FROM Sale");
+            stmt.execute("DELETE FROM Buyer");
+            stmt.execute("DELETE FROM MagicStick");
+            stmt.execute("DELETE FROM DeliveryDetails");
+            stmt.execute("DELETE FROM Delivery");
 
-        stmt.execute("DELETE FROM Sale");
-        stmt.execute("DELETE FROM Buyer");
-        stmt.execute("DELETE FROM MagicStick");
-        stmt.execute("DELETE FROM DeliveryDetails");
-        stmt.execute("DELETE FROM Delivery");
+            stmt.execute("UPDATE Wood SET amount = 0");
+            stmt.execute("UPDATE Core SET amount = 0");
 
-        stmt.execute("UPDATE Wood SET amount = 0");
-        stmt.execute("UPDATE Core SET amount = 0");
+            stmt.execute("ALTER SEQUENCE sale_id_seq RESTART WITH 1");
+            stmt.execute("ALTER SEQUENCE wood_id_seq RESTART WITH 1");
+            stmt.execute("ALTER SEQUENCE core_id_seq RESTART WITH 1");
+            stmt.execute("ALTER SEQUENCE magicstick_id_seq RESTART WITH 1");
+            stmt.execute("ALTER SEQUENCE buyer_id_seq RESTART WITH 1");
+            stmt.execute("ALTER SEQUENCE delivery_id_seq RESTART WITH 1");
+            stmt.execute("ALTER SEQUENCE deliverydetails_id_seq RESTART WITH 1");
 
-        stmt.execute("ALTER SEQUENCE sale_id_seq RESTART WITH 1");
-        stmt.execute("ALTER SEQUENCE wood_id_seq RESTART WITH 1");
-        stmt.execute("ALTER SEQUENCE core_id_seq RESTART WITH 1");
-        stmt.execute("ALTER SEQUENCE magicstick_id_seq RESTART WITH 1");
-        stmt.execute("ALTER SEQUENCE buyer_id_seq RESTART WITH 1");
-        stmt.execute("ALTER SEQUENCE delivery_id_seq RESTART WITH 1");
-        stmt.execute("ALTER SEQUENCE deliverydetails_id_seq RESTART WITH 1");
-
-        System.out.println("Все данные удалены. Остатки на складе обнулены.");
+            System.out.println("Все данные удалены. Остатки на складе обнулены.");
+        }
     }
-
 }

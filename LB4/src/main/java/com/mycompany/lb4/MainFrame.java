@@ -3,7 +3,6 @@ package com.mycompany.lb4;
 import javax.swing.*;
 import java.awt.event.*;
 import java.sql.SQLException;
-
 import java.awt.*;
 
 public class MainFrame extends JFrame implements ActionListener {

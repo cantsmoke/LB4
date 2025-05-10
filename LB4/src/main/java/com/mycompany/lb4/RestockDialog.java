@@ -10,7 +10,6 @@ import java.sql.SQLException;
 
 public class RestockDialog extends JDialog {
     private JComboBox<String> existingTypeComboBox;
-    //private JTextField customTypeField;
     private JComboBox<String> componentTypeCombo;
     private JTextField amountField;
     private DefaultTableModel tableModel;
@@ -44,12 +43,6 @@ public class RestockDialog extends JDialog {
             String selectedType = (String) componentTypeCombo.getSelectedItem();
             updateExistingTypes(selectedType);
         });
-
-        // Поле ввода нового типа
-        //customTypeField = new JTextField();
-        //customTypeField.setToolTipText("Или введите новый тип");
-        //formPanel.add(new JLabel("Новый тип (если нет в списке):"));
-        //formPanel.add(customTypeField); // Исправление: используем customTypeField вместо customTypeComboBox
 
         amountField = new JTextField();
         formPanel.add(new JLabel("Количество:"));
@@ -110,7 +103,6 @@ public class RestockDialog extends JDialog {
     private void addComponentToTable() {
         String componentType = (String) componentTypeCombo.getSelectedItem();
         String selectedExisting = (String) existingTypeComboBox.getSelectedItem();
-        //String customType = customTypeField.getText().trim();
         String amountText = amountField.getText().trim();
         
         if (selectedExisting == null) {
@@ -133,7 +125,6 @@ public class RestockDialog extends JDialog {
         }
 
         String fullTypeName = selectedExisting;
-        //String fullTypeName = (selectedExisting != null ? selectedExisting : customType).trim();
         if (fullTypeName.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Выберите название компонента.", "Ошибка", JOptionPane.WARNING_MESSAGE);
             return;
@@ -162,7 +153,6 @@ public class RestockDialog extends JDialog {
 
         requests.add(new ComponentRestockRequest(componentType, existingId, amount));
 
-        //customTypeField.setText("");
         amountField.setText("");
     }
     
@@ -182,7 +172,6 @@ public class RestockDialog extends JDialog {
             String[] types = typeNames.toArray(new String[0]);
             existingTypeComboBox.setModel(new DefaultComboBoxModel<>(types));
             existingTypeComboBox.setSelectedItem(null);
-            //customTypeField.setText("");
             amountField.setText("");
         } catch (SQLException ex) {
             existingTypeComboBox.setModel(new DefaultComboBoxModel<>(new String[0]));

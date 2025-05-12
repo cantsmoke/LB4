@@ -18,7 +18,7 @@
                          </descriptorRefs>
                          <archive>
                          <manifest>
-                                 <mainClass>com.mycompany.lb3.LB3</mainClass>
+                                 <mainClass>com.mycompany.lb4.LB4</mainClass>
                              </manifest>
                          </archive>
                      </configuration>

@@ -16,9 +16,9 @@ public class DatabaseManager {
     }
 
     public void connect() throws SQLException {
-        String url = "jdbc:postgresql://localhost:2345/OliwanderShop";
-        String user = "postgres";
-        String password = "88665511";
+        String url = "jdbc:postgresql://aws-0-eu-north-1.pooler.supabase.com:5432/postgres";
+        String user = "postgres.nytxkpnejcahihqwvkzl";
+        String password = "aa88665511!";
 
         connection = DriverManager.getConnection(url, user, password);
         System.out.println("Подключено к базе данных.");

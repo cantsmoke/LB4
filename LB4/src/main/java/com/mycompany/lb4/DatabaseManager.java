@@ -16,7 +16,7 @@ public class DatabaseManager {
     }
 
     public void connect() throws SQLException {
-        String url = "jdbc:postgresql://192.168.1.66:2345/OliwanderShop";
+        String url = "jdbc:postgresql://localhost:2345/OliwanderShop";
         String user = "postgres";
         String password = "88665511";
 
